@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desktop Texting</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <input type="text" id="fromName">
+  <input type="email" id="fromEmail">
+  <button id="loadContactsButton">Load Contacts</button>
+  <div id="contactDetails">
+    <label>First Name:</label><input type="text" id="firstNameText">&nbsp;
+    <label>Last Name:</label><input type="text" id="lastNameText"><br>
+    <label>Telephone:</label><input type="tel" id="phoneNumberText">&nbsp;
+    <label>Provider:</label><input type="text" id="providerText"><br>
+    <textarea id="messageToSend"></textarea>
+    <button id="sendTextButton" onclick="sendMessage()">Send Message/button>
+  </div>
+
+  <script>
+    const loadContactsButton = document.getElementById('loadContactsButton');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+    
+    async function openContacts() {
+      const contactsFile = openFile();
+      const text = await file.text();
+
+      parseContactsCSV(text);
+    }
+
+    function parseContactsCSV(text) {
+      const rows = text.split('\n').map(row => row.split(','));
+      const contacts = [];
+
+      // Assuming the first row contains headers
+      for (let i = 1; i < rows.length; i++) {
+        const [firstName, lastName, phoneNumber, provider] = rows[i];
+        if (firstName && lastName && phoneNumber && provider) {
+          contacts.push({
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            phoneNumber: phoneNumber.trim(),
+            provider: provider.trim(),
+          });
+        }
+      }
+
+      console.log('Contacts loaded:', contacts);
+      // You can now use the contacts array as needed
+    }
+
+    async function initData() {
+      loadTransporterData();
+      openContacts();
+      document.getElementById('firstNameText').text = contacts[0].firstName;
+      document.getElementById('lastNameText').text = contacts[0].lastName;
+      document.getElementById('phoneNumberText').text = contacts[0].phoneNumber;
+      document.getElementById('providerText').text = contacts[0].provider;
+    }
+
+    function sendMessage() {
+      let toEmail = "nobody@example.com";
+      const fromFirstName = document.getElementById('firstNameText').text;
+      const fromLastName = document.getElementById('lastNameText').text;
+      const fromName = fromFirstName + " " + fromLastname;
+      const phoneNumber = document.getElementById('phoneNumberText').text;
+      const provider = document.getElementById('providerText').text;
+      const message = document.getElementById('messageToSend').innerText;
+      toEmail = phoneNumber + "@" + cellServiceProvider(provider);
+      sendText(fromName, fromEmail, toEmail, messageToSend);      
+    }
+
+    loadContactsButton.addEventListener('click', initData);
+    sendMessageButton.addEventListener('click', sendMessage);
+    window.addEventListener('load', openFile);
+  </script>
+</body>
+</html>
